@@ -2,9 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Use CORS middleware to allow cross-origin requests
+app.use(cors());
 
 let blacklist = new Set();
 
@@ -18,11 +22,9 @@ fs.readFile('blacklist.txt', 'utf8', (err, data) => {
   console.log('Blacklist loaded:', blacklist.size, 'IPs');
 });
 
-// Use CORS middleware to allow cross-origin requests
-app.use(cors());
-
 app.use(bodyParser.json());
 
+// Endpoint to check IP
 app.post('/check-ip', (req, res) => {
   const { ip } = req.body;
   if (blacklist.has(ip)) {
@@ -30,6 +32,12 @@ app.post('/check-ip', (req, res) => {
   } else {
     res.json({ malicious: false });
   }
+});
+
+// Serve the blacklist file with CORS headers
+app.get('/blacklist.txt', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.join(__dirname, 'blacklist.txt'));
 });
 
 app.listen(port, () => {

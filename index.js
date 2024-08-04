@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const fs = require('fs');
 
 const app = express();
@@ -16,6 +17,9 @@ fs.readFile('blacklist.txt', 'utf8', (err, data) => {
   blacklist = new Set(data.split('\n').map(ip => ip.trim()));
   console.log('Blacklist loaded:', blacklist.size, 'IPs');
 });
+
+// Use CORS middleware to allow cross-origin requests
+app.use(cors());
 
 app.use(bodyParser.json());
 

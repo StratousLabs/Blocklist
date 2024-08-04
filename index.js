@@ -7,8 +7,24 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Use CORS middleware to allow cross-origin requests
-app.use(cors());
+// Specify allowed origins
+const allowedOrigins = [
+  'https://blocklist-6.onrender.com/blacklist.txt'
+  
+];
+
+// Use CORS middleware to allow requests from specific origins
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 let blacklist = new Set();
 
@@ -36,7 +52,7 @@ app.post('/check-ip', (req, res) => {
 
 // Serve the blacklist file with CORS headers
 app.get('/blacklist.txt', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'chrome-extension://<your-extension-id>');
   res.sendFile(path.join(__dirname, 'blacklist.txt'));
 });
 

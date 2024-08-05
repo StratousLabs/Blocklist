@@ -34,6 +34,12 @@ app.post('/check-ip', (req, res) => {
   }
 });
 
+// Serve the blacklist file
+app.get('/blacklist.txt', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.join(__dirname, 'blacklist.txt'));
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });

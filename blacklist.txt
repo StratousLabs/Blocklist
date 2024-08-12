@@ -34,4 +34,3 @@ http://00003485.com/banks/Tangerine
 http://00003485.com/banks/TD
 http://000066655333778880000.000webhostapp.com
 http://0000bbffxzzzz900.000webhostapp.com
-https://app.pentest-tools.com/dashboard
